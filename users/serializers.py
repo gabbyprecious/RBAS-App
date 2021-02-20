@@ -32,32 +32,24 @@ class SignUpSerializer(serializers.Serializer):
         :param validated_data:
         :return:
         """
-        # email = validated_data.get("email")
-        # username = validated_data.get("username")
-        # password = validated_data.get("password")
-        # first_name = validated_data.get("first_name")
-        # last_name = validated_data.get("last_name")
-        # level = validated_data.get("level")
-        # password = validated_data.get("password")
+        level = validated_data.get("level")
+        email = validated_data.get("email")
+        self.validate_email(email)
+        if level > 4:
+            raise serializers.ValidationError("level does not exist")
         user = User.objects.create_user(**validated_data)
         if user.level == 0:
             user.is_superuser = True
+        elif user.level == 2 or user.level == 3:
+            user.is_superuser = False
+            user.is_staff = True
         else:
             user.is_superuser = False
+            user.is_staff = False
         user.save()
         return user
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        # fields = "__all__"
         exclude = ("groups", "user_permissions", "last_login", "password",)
-        # fields = (
-        #     "id",
-        #     "email",
-        #     "first_name",
-        #     "last_name",
-        #     "is_company",
-        #     "verified",
-        #     "comments",
-        # )

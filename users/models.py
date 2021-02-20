@@ -1,5 +1,3 @@
-import uuid
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -20,5 +18,4 @@ class User(AbstractUser):
         (READ_ONLY, "Read Only"),
     )
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     level = models.SmallIntegerField(choices=LEVEL_CHOICES, db_index=True, default=READ_ONLY)
