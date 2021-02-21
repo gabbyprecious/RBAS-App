@@ -1,1 +1,1 @@
-web: gunicorn image_repo.wsgi --log-file -
+web: gunicorn rbas.wsgi --log-file -
