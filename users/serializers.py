@@ -23,7 +23,7 @@ class SignUpSerializer(serializers.Serializer):
             if user.is_active:
                 raise serializers.ValidationError("user with that email already exists")
         except User.DoesNotExist:
-            pass
+            return email
 
     def create(self, validated_data):
         """
