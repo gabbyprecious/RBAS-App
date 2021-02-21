@@ -23,8 +23,7 @@ class SignUpSerializer(serializers.Serializer):
             if user.is_active:
                 raise serializers.ValidationError("user with that email already exists")
         except User.DoesNotExist:
-            return email
-        return email
+            pass
 
     def create(self, validated_data):
         """
@@ -35,21 +34,12 @@ class SignUpSerializer(serializers.Serializer):
         level = validated_data.get("level")
         email = validated_data.get("email")
         self.validate_email(email)
-        if level > 4:
+        if level > 4 or level < 0:
             raise serializers.ValidationError("level does not exist")
         user = User.objects.create_user(**validated_data)
-        if user.level == 0:
-            user.is_superuser = True
-        elif user.level == 2 or user.level == 3:
-            user.is_superuser = False
-            user.is_staff = True
-        else:
-            user.is_superuser = False
-            user.is_staff = False
-        user.save()
         return user
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ("groups", "user_permissions", "last_login", "password",)
+        fields = ("username", "email", "first_name", "last_name", "level",)

@@ -13,13 +13,8 @@ class OnlyStaffOwnerUserPermission(permissions.BasePermission):
     message = 'Only Staff or Owner Users can access this endpoint.'
 
     def has_permission(self, request, view):
-        if request.user.is_staff or request.user.is_superuser:
-            return True
-        else:
-            return False
-
-        return request.user.is_authenticated
-
+        allowed_level = {0, 2, 3,}
+        return request.user.level in allowed_level
 class OnlyAdminOwnerUserPermission(permissions.BasePermission):
     """
     Custom user API permissions.
@@ -32,12 +27,8 @@ class OnlyAdminOwnerUserPermission(permissions.BasePermission):
     message = 'Only Admin Staff or Owner Users can access this endpoint.'
 
     def has_permission(self, request, view):
-        if request.user.level == 2 or request.user.is_superuser:
-            return True
-        else:
-            return False
+        return request.user.level == 2 or request.user.level == 0
 
-        return request.user.is_authenticated
 
 class OnlyInvestorOwnerUserPermission(permissions.BasePermission):
     """
@@ -50,28 +41,18 @@ class OnlyInvestorOwnerUserPermission(permissions.BasePermission):
     message = 'Only Investors or Owners can access this endpoint.'
 
     def has_permission(self, request, view):
-        if request.user.is_superuser and request.user.level == 1:
-            return True
-        else:
-            return False
-
-        return request.user.is_authenticated
+        return request.user.level <= 1
 
 class OnlyOwnerUserPermission(permissions.BasePermission):
     """
     Custom user API permissions.
 
     - Normal users can't send requests
-    - Staff and Superusers can do everything
+    - Owners can do everything
 
     """
 
     message = 'Only Owners can access this endpoint.'
 
     def has_permission(self, request, view):
-        if request.user.is_superuser:
-            return True
-        else:
-            return False
-
-        return request.user.is_authenticated
+        return request.user.level == 0

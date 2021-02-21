@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rest_framework.authtoken import views
 
 from users.views import *
 
@@ -24,10 +23,10 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path('api-token-auth/', LoginView.as_view({"post": "login"})),
+    path('api-token-auth/', LoginView.as_view({"post": "login"}), name = "user-login"),
     path('user-signup/', SignUpView.as_view({"post": "create"}), name = "user-signup"),
     path('all-user/', AllUser.as_view({"post": "get"}), name = "all-users"),
-    path('authenticated-user/', OnlyAuthenticatedUser.as_view({"post": "get"}), name = "all-users"),
+    path('authenticated-user/', OnlyAuthenticatedUser.as_view({"post": "get"}), name = "authenticated-user"),
     path('only-staff/', OnlyStaffOwnerUser.as_view({"post": "get"}), name = "only-staff"),
     path('only-admin/', OnlyAdminStaffOwnerUser.as_view({"post": "get"}), name = "only-admin"),
     path('only-investor-owner/', OnlyInvestorAndOwnerUser.as_view({"post": "get"}), name = "only-investor-owner"),

@@ -2,8 +2,6 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -29,8 +27,10 @@ class LoginView(GenericViewSet):
         :return:
         """
 
-        username = request.data["username"]
-        password = request.data["password"]
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        # import pdb; pdb.set_trace()
 
         user = authenticate(username=username, password=password)
 
@@ -51,10 +51,10 @@ class LoginView(GenericViewSet):
             "Authorization",
             value=f"Bearer {token}",
             httponly=True,
-            max_age=1800,
-            expires=1800,
-            samesite=None,
-            secure=False,  # Cookie is sent from client only over HTTP when flag turned on
+            max_age=settings.COOKIE_TIME,
+            expires=settings.COOKIE_TIME,
+            samesite="None",
+            secure=settings.COOKIE_SECURE, # Cookie is sent from client only over HTTP when flag turned on
         )
         return response
 
@@ -86,7 +86,7 @@ class AllUser(GenericViewSet):
         
         return Response(
             {"message": message , "success": True},
-            status=status.HTTP_201_CREATED,
+            status=status.HTTP_200_OK,
         )
 
 class OnlyAuthenticatedUser(GenericViewSet):
@@ -99,7 +99,7 @@ class OnlyAuthenticatedUser(GenericViewSet):
 
         return Response(
             {"user": user_serializer.data, "message": message, "success": True},
-            status=status.HTTP_201_CREATED,
+            status=status.HTTP_200_OK,
         )
 
 class OnlyStaffOwnerUser(GenericViewSet):
@@ -112,7 +112,7 @@ class OnlyStaffOwnerUser(GenericViewSet):
 
         return Response(
             {"user": user_serializer.data, "message": message, "success": True},
-            status=status.HTTP_201_CREATED,
+            status=status.HTTP_200_OK,
         )
 
 class OnlyAdminStaffOwnerUser(GenericViewSet):
@@ -125,7 +125,7 @@ class OnlyAdminStaffOwnerUser(GenericViewSet):
 
         return Response(
             {"user": user_serializer.data, "message": message, "success": True},
-            status=status.HTTP_201_CREATED,
+            status=status.HTTP_200_OK,
         )
 
 class OnlyInvestorAndOwnerUser(GenericViewSet):
@@ -138,7 +138,7 @@ class OnlyInvestorAndOwnerUser(GenericViewSet):
 
         return Response(
             {"user": user_serializer.data, "message": message, "success": True},
-            status=status.HTTP_201_CREATED,
+            status=status.HTTP_200_OK,
         )
 
 class OnlyOwnerUser(GenericViewSet):
@@ -152,5 +152,5 @@ class OnlyOwnerUser(GenericViewSet):
 
         return Response(
             {"user": user_serializer.data, "message": message, "success": True},
-            status=status.HTTP_201_CREATED,
+            status=status.HTTP_200_OK,
         )
